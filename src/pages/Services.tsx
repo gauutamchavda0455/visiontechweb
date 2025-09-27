@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 type Item = {
   id: string
@@ -17,7 +18,6 @@ const sections: Section[] = [
   {
     id: 'dpe',
     title: 'Digital Product Engineering',
-    tagline: 'Engineering your future with breakthrough solutions.',
     items: [
       { id: 'concept', title: 'Concept & Ideation', detail: 'Turn ideas into validated concepts and actionable roadmaps with discovery workshops, PoCs, and MVP scoping.' },
       { id: 'rdd', title: 'Research, Design & Development', detail: 'From discovery to delivery: user research, UX/UI, architecture, and agile implementation to ship features faster.' },
@@ -75,29 +75,111 @@ const sections: Section[] = [
 
 export default function Services() {
   const [openSection, setOpenSection] = useState<string>('dpe') // default open: Digital Product Engineering
-  const [openItem, setOpenItem] = useState<string | null>(null)
-
-  // If navigated with a hash (e.g., /services#sec-tech), open the matching section
-  useEffect(() => {
-    const hash = window.location.hash.replace('#', '')
-    if (hash) {
-      const match = sections.find((s) => `sec-${s.id}` === hash)
-      if (match) setOpenSection(match.id)
-    }
+  const location = useLocation()
+  // Load service images only from src/images/servicess
+  const images = useMemo(() => {
+    const map = import.meta.glob('../images/servicess/*.{png,PNG,jpg,JPG,jpeg,JPEG,webp,WEBP,svg,SVG}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>
+    const entries = Object.entries(map).map(([k, v]) => {
+      const base = k.split('/').pop() || ''
+      return [base.toLowerCase(), v] as const
+    })
+    return new Map(entries)
   }, [])
+
+  const canonicalAnchor = (title: string) => {
+    const parts = title.replace(/&/g, ' ').split(/[^A-Za-z0-9]+/).filter(Boolean)
+    const filtered = parts.filter((p) => p.toLowerCase() !== 'and')
+    return filtered.join('_')
+  }
+
+  
+  const buildTitleStems = (title: string): string[] => {
+    const lower = title.toLowerCase()
+    // Replace ampersands with word boundary spaces so they can be dropped optionally
+    const replaced = lower.replace(/&/g, ' ')
+    // Tokens (alnum only)
+    const tokens = replaced.replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean)
+    const noAnd = tokens.filter((t) => t !== 'and')
+
+    const stems = new Set<string>()
+    const addForms = (arr: string[]) => {
+      if (!arr.length) return
+      stems.add(arr.join('-'))
+      stems.add(arr.join('_'))
+    }
+    addForms(tokens)
+    addForms(noAnd)
+    return Array.from(stems)
+  }
+
+  const getImage = (sectionId: string, itemId?: string, title?: string) => {
+    const candidates: string[] = []
+    if (itemId) {
+      candidates.push(`${sectionId}-${itemId}`)
+      candidates.push(`${itemId}`)
+    }
+    if (title) {
+      const stems = buildTitleStems(title)
+      for (const s of stems) {
+        candidates.push(s)
+        candidates.push(`${sectionId}-${s}`)
+      }
+    }
+    candidates.push(`${sectionId}`)
+    // Search filenames (lowercased) that start with stem + '.'
+    for (const stem of candidates) {
+      const found = [...images.entries()].find(([name]) => name.startsWith(stem.toLowerCase() + '.'))
+      if (found) return found[1]
+    }
+    return null
+  }
+
+  // Open matching section whenever the URL hash changes (including Link navigations)
+  useEffect(() => {
+    const raw = (location.hash || '').replace('#', '')
+    if (!raw) return
+    const hash = raw.toLowerCase()
+    const secMatch = sections.find((s) => `sec-${s.id}` === raw)
+    if (secMatch) {
+      setOpenSection(secMatch.id)
+      return
+    }
+    for (const sec of sections) {
+      for (const it of sec.items) {
+        const anchor = canonicalAnchor(it.title)
+        if (
+          anchor.toLowerCase() === hash ||
+          `item-${sec.id}-${it.id}` === raw ||
+          `${sec.id}-${it.id}` === raw
+        ) {
+          setOpenSection(sec.id)
+          // Scroll after render
+          setTimeout(() => {
+            const el = document.getElementById(anchor)
+            el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }, 0)
+          return
+        }
+      }
+    }
+  }, [location.hash])
 
   const toggleSection = (id: string) => {
     setOpenSection((prev) => (prev === id ? id : id))
-    setOpenItem(null)
+    // reflect in URL for clarity/sharing
+    try {
+      window.history.replaceState(null, '', `#sec-${id}`)
+    } catch {}
   }
 
-  const toggleItem = (id: string) => {
-    setOpenItem((prev) => (prev === id ? null : id))
-  }
+  const activeSection = sections.find((s) => s.id === openSection)
 
   return (
-    <section>
-      <h2>Services</h2>
+    <section className="services-page">
+      <h2>{activeSection?.title ?? 'Services'}</h2>
+      {activeSection?.tagline && (
+        <p style={{ marginTop: 0, opacity: 0.9 }}>{activeSection.tagline}</p>
+      )}
       <div className="accordion">
         {sections.map((sec) => (
           <div className="section" key={sec.id}>
@@ -120,26 +202,28 @@ export default function Services() {
               className={"items collapse" + (openSection === sec.id ? ' open' : '')}
               aria-hidden={openSection !== sec.id}
             >
-              {sec.items.map((it) => (
-                <div className="item" key={it.id}>
-                  <button
-                    className={"item-title" + (openItem === it.id ? ' active' : '')}
-                    onClick={() => toggleItem(it.id)}
-                    aria-expanded={openItem === it.id}
-                    aria-controls={`item-${it.id}`}
-                  >
-                    <span>{it.title}</span>
-                    <span className={"chevron" + (openItem === it.id ? ' open' : '')} aria-hidden>⌄</span>
-                  </button>
-                  <div
-                    id={`item-${it.id}`}
-                    className={"item-detail collapse" + (openItem === it.id ? ' open' : '')}
-                    aria-hidden={openItem !== it.id}
-                  >
-                    <p>{it.detail}</p>
-                  </div>
-                </div>
-              ))}
+              <div className="service-list">
+                {sec.items.map((it) => {
+                  const imgUrl = getImage(sec.id, it.id, it.title)
+                  const blockClass = 'service-block'
+                  const anchor = canonicalAnchor(it.title)
+                  return (
+                    <div className={blockClass} id={anchor} key={it.id}>
+                      <div className="service-media">
+                        {imgUrl ? (
+                          <img src={imgUrl} alt={`${it.title} illustration`} />
+                        ) : (
+                          <div className="media-placeholder" aria-hidden />
+                        )}
+                      </div>
+                      <div className="service-content">
+                        <h3><a href={`#${anchor}`}>{it.title}</a></h3>
+                        <p>{it.detail}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
         ))}

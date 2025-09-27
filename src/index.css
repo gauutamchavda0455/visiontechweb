@@ -17,6 +17,12 @@ html, body {
   height: 100%;
 }
 
+/* Account for sticky header when using in-page anchors */
+html {
+  scroll-padding-top: 90px; /* offset equals header height */
+  scroll-behavior: smooth;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
