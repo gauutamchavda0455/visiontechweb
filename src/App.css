@@ -1,0 +1,378 @@
+#root {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styles */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1rem 1rem 4rem; /* left padding 4rem */
+  min-height: 72px; /* ensure taller header */
+  background-color: #000000; /* black header */
+  color: #ffffff;
+  border-bottom: 1px solid #ffffff; /* 1px white bottom border */
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.brand a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-logo {
+  width: 4rem; /* adjusted smaller size */
+  height: auto;
+  display: block;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 3rem; /* increased space between menu items */
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.9;
+  font-size: 1.125rem; /* increase menu text size */
+  font-weight: 600;
+}
+
+.nav a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Header services dropdown */
+.site-header .menu {
+  position: relative;
+}
+
+.site-header .menu-link {
+  opacity: 0.9;
+}
+
+.site-header .menu .dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 280px;
+  display: none;
+  padding: 0.5rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  background: #000000;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 10;
+}
+
+.site-header .menu:hover .dropdown,
+.site-header .menu:focus-within .dropdown {
+  display: grid;
+}
+
+.site-header .menu .dropdown a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
+.site-header .menu .dropdown a:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* Active route link */
+.nav a[aria-current="page"] {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+main {
+  display: grid;
+  gap: 3rem;
+  padding: 1rem;
+  flex: 1;
+}
+
+section h1,
+section h2 {
+  margin-bottom: 0.5rem;
+}
+
+/* Footer styles */
+.site-footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #ffffff; /* 1px white top border */
+  font-size: 0.95rem;
+}
+
+/* Services accordion */
+.accordion {
+  display: grid;
+  gap: 1rem;
+}
+
+.section {
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+
+.section-header {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 1rem 1rem 1rem 1.25rem;
+  cursor: pointer;
+  display: block;
+}
+
+.section-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-header .section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.section-header .section-tagline {
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.items {
+  padding: 0.5rem 1rem 1rem 1.25rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.item-title {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 0.5rem 0.25rem;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.item-title.active {
+  border-left-color: #ffffff;
+}
+
+.item-detail {
+  padding: 0.25rem 0 0.75rem 0.75rem;
+  color: rgba(255,255,255,0.92);
+}
+
+/* dropdown animation */
+.collapse {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms ease;
+}
+.collapse.open {
+  max-height: 1000px; /* large enough for content */
+}
+
+.chevron {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Carousel */
+.carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.carousel img.carousel-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 600ms ease-in-out;
+}
+
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 2rem 5rem 2rem 4rem; /* top right bottom left */
+  pointer-events: none; /* let clicks fall through except buttons */
+  z-index: 2;
+}
+
+.carousel-overlay .hero {
+  max-width: 900px;
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  text-align: left; /* align text to the right */
+  padding-right: 30px;
+}
+
+.headline {
+  font-size: clamp(24px, 5vw, 48px);
+  line-height: 1.1;
+  margin: 0 0 0.5rem 0;
+}
+
+.subhead {
+  font-size: clamp(14px, 2.2vw, 18px);
+  margin: 0 0 1rem 0;
+  opacity: 0.95;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  pointer-events: auto;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: #ffffff;
+  color: #000000;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+/* Carousel controls */
+.carousel-controls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 3;
+  pointer-events: none; /* only buttons interact */
+}
+
+.carousel-controls .nav {
+  pointer-events: auto;
+  width: 72px; /* bigger hit area */
+  height: 72px;
+  padding: 0; /* no inner padding */
+  border-radius: 0;
+  border: 0;
+  background: transparent; /* show only the arrow */
+  color: #fff;
+  font-size: 64px; /* bigger arrow */
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.carousel-controls .nav:hover {
+  opacity: 0.9; /* subtle hover without border */
+}
+
+.carousel-controls .prev { margin-right: auto; }
+.carousel-controls .next { margin-left: auto; }
+
+/* Dots */
+.carousel-indicators {
+  position: absolute;
+  left: 50%;
+  bottom: 8px; /* closer to bottom */
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px; /* tighter spacing */
+  z-index: 3;
+}
+
+.carousel-indicators .dot {
+  position: relative;
+  width: 5rem; /* requested width */
+  height: 1px; /* requested height */
+  padding: 8px 0; /* keep a clickable area */
+  border: 0;
+  background: transparent; /* drawn via ::after */
+}
+
+.carousel-indicators .dot::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-indicators .dot.active::after {
+  background: #ffffff;
+}
+
+/* Full-bleed helper: stretches content edge-to-edge */
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.social a {
+  color: inherit;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.social a:hover {
+  opacity: 1;
+}
