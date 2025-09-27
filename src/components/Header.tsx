@@ -1,10 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 
-// Try to load a logo from src/images/logo.png (or .jpg/.svg) if present
-const logoMap = import.meta.glob('../images/logo.*', { eager: true, query: '?url', import: 'default' }) as Record<string, string>
-const logoUrl = Object.values(logoMap)[0]
-
 export default function Header() {
   const [servicesOpen, setServicesOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -38,11 +34,7 @@ export default function Header() {
     <header className={"site-header" + (mobileOpen ? ' menu-open' : '')}>
       <div className="brand">
         <a href="/" aria-label="Homepage">
-          {logoUrl ? (
-            <img className="brand-logo" src={logoUrl} alt="Logo" />
-          ) : (
-            'Visiontech'
-          )}
+          <span className="brand-text">VisionTech</span>
         </a>
       </div>
       <button

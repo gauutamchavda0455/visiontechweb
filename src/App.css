@@ -42,6 +42,39 @@
   display: block;
 }
 
+/* Brand text styles with subtle animated effect */
+.brand-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  background: linear-gradient(90deg, #ffffff, #9fdcff, #ffffff);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  transition: background-position 600ms ease, text-shadow 300ms ease;
+}
+.brand a:hover .brand-text,
+.brand a:focus-visible .brand-text {
+  background-position: 100% 0;
+  text-shadow: 0 0 16px rgba(159, 220, 255, 0.45);
+}
+.brand-text::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.9;
+  transform-origin: right center; /* animate from right */
+  transform: scaleX(0);
+  transition: transform 300ms ease;
+}
+.brand a:hover .brand-text::after,
+.brand a:focus-visible .brand-text::after {
+  transform: scaleX(1);
+}
+
 .nav {
   display: flex;
   align-items: center;
