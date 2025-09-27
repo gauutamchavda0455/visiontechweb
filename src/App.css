@@ -75,6 +75,23 @@
   transform: scaleX(1);
 }
 
+/* Brand icon next to the title */
+.brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  border-radius: 8px;
+  transition: transform 250ms ease, filter 250ms ease;
+}
+.brand a:hover .brand-icon,
+.brand a:focus-visible .brand-icon {
+  transform: rotate(8deg) scale(1.05);
+  filter: drop-shadow(0 0 8px rgba(110, 231, 249, 0.45));
+}
+
 .nav {
   display: flex;
   align-items: center;

@@ -34,7 +34,19 @@ export default function Header() {
     <header className={"site-header" + (mobileOpen ? ' menu-open' : '')}>
       <div className="brand">
         <a href="/" aria-label="Homepage">
-          <span className="brand-text">VisionTech</span>
+          <span className="brand-icon" aria-hidden>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <defs>
+                <linearGradient id="vtIconGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#5B8CFF" />
+                  <stop offset="100%" stopColor="#6EE7F9" />
+                </linearGradient>
+              </defs>
+              <path d="M2 12c2.5-4 6-6 10-6s7.5 2 10 6c-2.5 4-6 6-10 6s-7.5-2-10-6z" stroke="url(#vtIconGrad)" strokeWidth="1.6"/>
+              <circle cx="12" cy="12" r="3" fill="url(#vtIconGrad)" />
+            </svg>
+          </span>
+          <span className="brand-text">Visiontech</span>
         </a>
       </div>
       <button
